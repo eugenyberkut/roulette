@@ -15,10 +15,10 @@ import java.util.Optional;
 /**
  * Created by eugen on 31.07.2015.
  */
-public class Main {
+public class Main extends Thread {
 
     List<UserAccount> userAccounts = new ArrayList<>();
-    private int startMoney = 1000;
+    private int startMoney = 500;
     private String serverState;
 
     public static void main(String[] args) {
@@ -26,6 +26,7 @@ public class Main {
 
     }
 
+    @Override
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(666);
