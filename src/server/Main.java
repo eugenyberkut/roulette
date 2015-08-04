@@ -1,6 +1,7 @@
 package server;
 
 import bets.Bet;
+import gui.ScoreBoard;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +21,11 @@ public class Main extends Thread {
     List<UserAccount> userAccounts = new ArrayList<>();
     private int startMoney = 500;
     private String serverState;
+    private ScoreBoard scoreBoard;
+
+    public List<UserAccount> getUserAccounts() {
+        return userAccounts;
+    }
 
     public static void main(String[] args) {
         new Main().run();
@@ -63,7 +69,9 @@ public class Main extends Thread {
                 if (!serverState.equals("registration") || exists(split[1])) {
                     return Command.REJECTED;
                 } else {
-                    return register(split[1]);
+                    String result = register(split[1]);
+                    scoreBoard.repaint();
+                    return result;
                 }
             case "state":
                 return getServerState();
@@ -71,9 +79,12 @@ public class Main extends Thread {
             case "account":
                 return split[1] + " " + getAccountMoney(split[1]);
             case "bet":
-                return processBet(split);
+                String result = processBet(split);
+                scoreBoard.repaint();
+                return result;
             default: return Command.ERROR;
         }
+
     }
 
     private String processBet(String[] bet) {
@@ -110,6 +121,7 @@ public class Main extends Thread {
         int value = s.hashCode()^666;
         String key = s + value;
         UserAccount ua = new UserAccount(s,key,getStartMoney());
+        userAccounts.add(ua);
         return key;
     }
 
@@ -123,5 +135,9 @@ public class Main extends Thread {
 
     public String getServerState() {
         return serverState;
+    }
+
+    public void setScoreBoard(ScoreBoard scoreBoard) {
+        this.scoreBoard = scoreBoard;
     }
 }

@@ -19,11 +19,12 @@ public class MainFrame extends JFrame{
         roulette.start();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initComponents();
+        roulette.setScoreBoard(scoreBoard);
         pack();
     }
 
     private void initComponents() {
-        getContentPane().add(scoreBoard = new ScoreBoard());
+        getContentPane().add(scoreBoard = new ScoreBoard(roulette));
     }
 
 
