@@ -1,7 +1,7 @@
 package bets;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа J - чет-нечет
  */
 public class BetJ extends Bet {
     public BetJ(int value, int amount) {

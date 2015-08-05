@@ -3,7 +3,7 @@ package bets;
 import java.util.Arrays;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа B - два числа
  */
 public class BetB extends Bet {
     public BetB(int first, int second, int amount) {

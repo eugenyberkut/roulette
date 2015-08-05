@@ -1,9 +1,11 @@
 package server;
 
 /**
- * Created by eugen on 31.07.2015.
+ * Константы ответов на команды серверу
  */
 public class Command {
+    public final static String WRONG_ACCOUNT = "wrong account";
+
     public final static String ERROR = "command error";
 
     public static final String REJECTED = "rejected";
@@ -11,4 +13,8 @@ public class Command {
     public static final String ACCEPTED = "accepted";
 
     public static final String IGNORED = "ignored";
+
+    public static final String OVERDRAFT = "overdraft";
+
+    public static final String BET_TOO_BIG = "bet too big";
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by eugen on 31.07.2015.
+ * Аккаунт игрока
  */
 public class UserAccount {
     private String name;

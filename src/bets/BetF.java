@@ -1,7 +1,7 @@
 package bets;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа F - два ряда (6 цифр)
  */
 public class BetF extends Bet {
     public BetF(int first, int second, int amount) {

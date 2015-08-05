@@ -1,7 +1,7 @@
 package bets;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа K - (большое-малое)
  */
 public class BetK extends Bet {
     public BetK(int value, int amount) {

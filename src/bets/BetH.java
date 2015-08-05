@@ -1,7 +1,7 @@
 package bets;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа H - дюжина
  */
 public class BetH extends Bet {
     public BetH(int dozen, int amount) {

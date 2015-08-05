@@ -1,7 +1,7 @@
 package bets;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа G - столбец
  */
 public class BetG extends Bet {
     public BetG(int column, int amount) {

@@ -1,7 +1,7 @@
 package bets;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа I - Красное/Черное
  */
 public class BetI extends Bet {
     public BetI(int value, int amount) {

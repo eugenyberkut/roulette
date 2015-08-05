@@ -3,7 +3,7 @@ package bets;
 import java.util.Arrays;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа С - стрит или 3 числа
  */
 public class BetC extends Bet {
     public BetC(int first, int second, int third, int amount) {

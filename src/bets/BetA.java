@@ -1,7 +1,9 @@
 package bets;
 
+import java.util.Arrays;
+
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа A - одно число
  */
 public class BetA extends Bet {
 
@@ -19,4 +21,5 @@ public class BetA extends Bet {
             return 0;
         }
     }
+
 }

@@ -3,7 +3,7 @@ package bets;
 import java.util.Arrays;
 
 /**
- * Created by eugen on 04.08.2015.
+ * Ставка типа D - четыре номера
  */
 public class BetD extends Bet {
     public BetD(int first, int second, int third, int fourth, int amount) {

@@ -12,16 +12,23 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 /**
- * Created by eugen on 31.07.2015.
+ * Поток игры - реализует механизмы регистрации, учета игроков и их баланса
  */
 public class Main extends Thread {
+    Random rnd = new Random();
 
-    List<UserAccount> userAccounts = new ArrayList<>();
+    private List<UserAccount> userAccounts = new ArrayList<>();
+
     private int startMoney = 500;
     private String serverState;
     private ScoreBoard scoreBoard;
+    public static final String REGISTRATION = "registration";
+    public static final String RUNNING = "running";
+    public static final String GAME_OVER = "game over";
+    private int MAX_BET = 100;
 
     public List<UserAccount> getUserAccounts() {
         return userAccounts;
@@ -55,18 +62,21 @@ public class Main extends Thread {
                 String command = in.readLine();
                 out.println(processCommand(command));
                 //socket.close();
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
             }
         }
     }
 
     private String processCommand(String command) {
+        if (GAME_OVER.equals(getServerState())) return Command.IGNORED;
         String[] split = command.split(" ");
         if (split.length<2 && !split[0].equals("state")) {
             return Command.ERROR;
         }
         switch (split[0]) {
             case "register":
-                if (!serverState.equals("registration") || exists(split[1])) {
+                if (!serverState.equals(REGISTRATION) || exists(split[1])) {
                     return Command.REJECTED;
                 } else {
                     String result = register(split[1]);
@@ -88,14 +98,19 @@ public class Main extends Thread {
     }
 
     private String processBet(String[] bet) {
-        if (!serverState.equals("running")) {
+        if (!RUNNING.equals(serverState)) {
             return Command.IGNORED;
         }
+        // Ищем по ключу
         UserAccount ua = findUserAccount(bet[bet.length - 1]);
-        if (ua == null) return Command.ERROR;
+        if (ua == null) return Command.WRONG_ACCOUNT;
         Bet b = Bet.createBet(bet);
         if (b == null) return  Command.ERROR;
+        if (b.getMoney() > MAX_BET) return Command.BET_TOO_BIG;
+        if (b.getMoney() > ua.getMoney()) return Command.OVERDRAFT;
         ua.addBet(b);
+        int money = b.getMoney();
+        ua.addMoney(-money); // ставка сделана
         return Command.ACCEPTED;
     }
 
@@ -113,9 +128,9 @@ public class Main extends Thread {
         }
     }
 
-    private boolean keyExists(String s) {
-        return userAccounts.stream().anyMatch(u -> u.getKey().equals(s));
-    }
+//    private boolean keyExists(String s) {
+//        return userAccounts.stream().anyMatch(u -> u.getKey().equals(s));
+//    }
 
     private String register(String s) {
         int value = s.hashCode()^666;
@@ -139,5 +154,25 @@ public class Main extends Thread {
 
     public void setScoreBoard(ScoreBoard scoreBoard) {
         this.scoreBoard = scoreBoard;
+    }
+
+    public void doGame() {
+        int value = rnd.nextInt(37); // от 0 до 36
+        System.out.println("value = " + value);
+        for (UserAccount userAccount : userAccounts) {
+            List<Bet> bets = userAccount.getBets();
+            System.out.println(userAccount.getName() + " - playing");
+            int sum = 0;
+            for (Bet bet : bets) {
+                sum += gameBet(value, bet);
+            }
+            userAccount.addMoney(sum);
+            userAccount.clearBets();
+        }
+    }
+
+    private int gameBet(int value, Bet bet) {
+        System.out.println(value + " : " + bet);
+        return bet.win(value);
     }
 }
