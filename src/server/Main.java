@@ -3,16 +3,10 @@ package server;
 import bets.Bet;
 import gui.ScoreBoard;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Поток игры - реализует механизмы регистрации, учета игроков и их баланса
@@ -23,12 +17,13 @@ public class Main extends Thread {
     private List<UserAccount> userAccounts = new ArrayList<>();
 
     private int startMoney = 500;
+    private int port = 666;
     private String serverState;
     private ScoreBoard scoreBoard;
     public static final String REGISTRATION = "registration";
     public static final String RUNNING = "running";
     public static final String GAME_OVER = "game over";
-    private int MAX_BET = 100;
+    private int maxBet = 100;
 
     public List<UserAccount> getUserAccounts() {
         return userAccounts;
@@ -42,7 +37,12 @@ public class Main extends Thread {
     @Override
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(666);
+            Properties properties = new Properties();
+            properties.load(new FileReader("roulette.ini"));
+            port = Integer.parseInt(properties.getProperty("port", "666"));
+            startMoney = Integer.parseInt(properties.getProperty("startmoney", "500"));
+            maxBet = Integer.parseInt(properties.getProperty("maxbet", "100"));
+            ServerSocket serverSocket = new ServerSocket(port);
             processMessages(serverSocket);
         } catch (IOException e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class Main extends Thread {
         if (ua == null) return Command.WRONG_ACCOUNT;
         Bet b = Bet.createBet(bet);
         if (b == null) return  Command.ERROR;
-        if (b.getMoney() > MAX_BET) return Command.BET_TOO_BIG;
+        if (b.getMoney() > maxBet) return Command.BET_TOO_BIG;
         if (b.getMoney() > ua.getMoney()) return Command.OVERDRAFT;
         ua.addBet(b);
         int money = b.getMoney();
