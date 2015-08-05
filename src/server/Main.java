@@ -83,6 +83,11 @@ public class Main extends Thread {
                     scoreBoard.repaint();
                     return result;
                 }
+            case "unregister": {
+                String result = unregister(split[1], split[2]);
+                if (result.endsWith("ok")) scoreBoard.repaint();
+                return result;
+            }
             case "state":
                 return getServerState();
 
@@ -138,6 +143,18 @@ public class Main extends Thread {
         UserAccount ua = new UserAccount(s,key,getStartMoney());
         userAccounts.add(ua);
         return key;
+    }
+
+    private String unregister(String userName, String userKey) {
+        int value = userName.hashCode()^666;
+        String key = userName + value;
+        if (userKey.equals(key)) {
+            Optional<UserAccount> first = userAccounts.stream().filter(u -> u.getName().equals(userName)).findFirst();
+            if (first.isPresent()) {
+                userAccounts.remove(first.get());
+                return "unregister ok";
+            } else return "unregister failed - user not found";
+        } else return "unregister failed - incorrect name or key";
     }
 
     private boolean exists(String s) {

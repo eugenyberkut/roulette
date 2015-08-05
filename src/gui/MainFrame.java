@@ -11,6 +11,9 @@ import java.awt.*;
 public class MainFrame extends JFrame{
     Main roulette;
     ScoreBoard scoreBoard;
+    Timer timer = new Timer(10000, e -> {
+        doGame();
+    });
 
     public MainFrame() {
 
@@ -28,6 +31,7 @@ public class MainFrame extends JFrame{
         getContentPane().add(scoreBoard = new ScoreBoard(roulette));
         JPanel bottomPanel = new JPanel();
         getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+
         JButton startStopButton = new JButton("Start/Stop");
         bottomPanel.add(startStopButton);
         startStopButton.addActionListener(e -> {
@@ -39,11 +43,25 @@ public class MainFrame extends JFrame{
                 setTitle("Roulette - stopped");
             }
         });
+
         JButton gameButton = new JButton("Game!");
+        bottomPanel.add(gameButton);
         gameButton.addActionListener(e -> {
             doGame();
         });
-        bottomPanel.add(gameButton);
+
+
+        JButton autoGameButton = new JButton("Auto game");
+        bottomPanel.add(autoGameButton);
+        autoGameButton.addActionListener(e -> {
+            if (timer.isRunning()) {
+                timer.stop();
+                setTitle("Roulette - running");
+            } else {
+                timer.start();
+                setTitle("Roulette - auto running");
+            }
+        });
     }
 
     private void doGame() {
