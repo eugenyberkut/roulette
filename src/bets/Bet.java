@@ -1,5 +1,7 @@
 package bets;
 
+import server.Main;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,10 +59,9 @@ public abstract class Bet {
 
     private static Bet createBetA(String[] bet) {
         // A <number> <amount> <key>
-        System.out.print("Bet A: ");
         int number = Integer.parseInt(bet[2]);
         int amount = Integer.parseInt(bet[3]);
-        System.out.println(number + " " + amount + " from " + bet[4]);
+        Main.log("Bet A: " + number + " " + amount + " from " + bet[4]);
         return new BetA(number, amount);
     }
 

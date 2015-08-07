@@ -17,4 +17,6 @@ public class Command {
     public static final String OVERDRAFT = "overdraft";
 
     public static final String BET_TOO_BIG = "bet too big";
+
+    public static final String DESCRIPTION_ERROR = "description error";
 }

@@ -56,19 +56,30 @@ public class Main extends Thread {
 
     private void processMessages(ServerSocket serverSocket) throws IOException {
         while (true) {
-            try (Socket socket = serverSocket.accept()) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                String command = in.readLine();
-                out.println(processCommand(command));
-                //socket.close();
+            try {
+                Socket socket = serverSocket.accept();
+                new ClientThread(socket, this).start();
             } catch (Exception ex) {
                 System.err.println(ex.getMessage());
             }
         }
     }
 
-    private String processCommand(String command) {
+//    private void processMessages(ServerSocket serverSocket) throws IOException {
+//        while (true) {
+//            try (Socket socket = serverSocket.accept()) {
+//                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+//                String command = in.readLine();
+//                out.println(processCommand(command));
+//                //socket.close();
+//            } catch (Exception ex) {
+//                System.err.println(ex.getMessage());
+//            }
+//        }
+//    }
+
+    public synchronized String processCommand(String command) {
         if (GAME_OVER.equals(getServerState())) return Command.IGNORED;
         String[] split = command.split(" ");
         if (split.length<2 && !split[0].equals("state")) {
@@ -81,7 +92,7 @@ public class Main extends Thread {
                 } else {
                     String result = register(split[1]);
                     scoreBoard.repaint();
-                    return result;
+                    return "ok " + result;
                 }
             case "unregister": {
                 String result = unregister(split[1], split[2]);
@@ -92,7 +103,7 @@ public class Main extends Thread {
                 return getServerState();
 
             case "account":
-                return split[1] + " " + getAccountMoney(split[1]);
+                return split[1] + " " + getAccountMoney(split[1]) + " " + getAccountBets(split[1]);
             case "bet":
                 String result = processBet(split);
                 scoreBoard.repaint();
@@ -110,7 +121,7 @@ public class Main extends Thread {
         UserAccount ua = findUserAccount(bet[bet.length - 1]);
         if (ua == null) return Command.WRONG_ACCOUNT;
         Bet b = Bet.createBet(bet);
-        if (b == null) return  Command.ERROR;
+        if (b == null) return  Command.DESCRIPTION_ERROR;
         if (b.getMoney() > maxBet) return Command.BET_TOO_BIG;
         if (b.getMoney() > ua.getMoney()) return Command.OVERDRAFT;
         ua.addBet(b);
@@ -130,6 +141,15 @@ public class Main extends Thread {
             return account.get().getMoney();
         } else {
             return 0;
+        }
+    }
+
+    private int getAccountBets(String s) {
+        Optional<UserAccount> account = userAccounts.stream().filter(u -> s.equals(u.getKey())).findFirst();
+        if (account.isPresent()) {
+            return account.get().getBets().size();
+        } else {
+            return -1;
         }
     }
 
@@ -175,21 +195,35 @@ public class Main extends Thread {
 
     public void doGame() {
         int value = rnd.nextInt(37); // от 0 до 36
-        System.out.println("value = " + value);
+        log("value = " + value);
         for (UserAccount userAccount : userAccounts) {
             List<Bet> bets = userAccount.getBets();
-            System.out.println(userAccount.getName() + " - playing");
             int sum = 0;
-            for (Bet bet : bets) {
-                sum += gameBet(value, bet);
+            if (userAccount.getBets().isEmpty()) {
+                log(userAccount.getName() + " - not playing - penalty 5 chips");
+                sum = -5;
+            } else {
+                for (Bet bet : bets) {
+                    sum += gameBet(value, bet);
+                }
+                if (sum > 0) {
+                    log(userAccount.getName() + " - playing: win " + sum);
+                } else {
+                    log(userAccount.getName() + " - playing: lose");
+                }
             }
             userAccount.addMoney(sum);
             userAccount.clearBets();
         }
     }
 
+    public static void log(String s) {
+        System.out.println(s);
+    }
+
     private int gameBet(int value, Bet bet) {
-        System.out.println(value + " : " + bet);
-        return bet.win(value);
+        int win = bet.win(value);
+        log(value + " : " + bet + (win > 0 ? " win "+ win : " lose"));
+        return win;
     }
 }

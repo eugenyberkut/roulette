@@ -12,6 +12,7 @@ public class UserAccount {
     private String name;
     private String key;
     private int money;
+
     private List<Bet> bets = new ArrayList<>();
 
     public UserAccount(String name, String key, int money) {
