@@ -200,8 +200,9 @@ public class Main extends Thread {
             List<Bet> bets = userAccount.getBets();
             int sum = 0;
             if (userAccount.getBets().isEmpty()) {
-                log(userAccount.getName() + " - not playing - penalty 5 chips");
+                log(userAccount.getName() + " - not playing - penalty 5 chips (if positive)");
                 sum = -5;
+                if (sum < 0) sum = 0;
             } else {
                 for (Bet bet : bets) {
                     sum += gameBet(value, bet);
