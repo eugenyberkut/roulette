@@ -1,6 +1,6 @@
 package bets;
 
-import java.util.Arrays;
+
 
 /**
  * Ставка типа A - одно число

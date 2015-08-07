@@ -37,11 +37,11 @@ public class Main extends Thread {
     @Override
     public void run() {
         try {
-            Properties properties = new Properties();
-            properties.load(new FileReader("roulette.ini"));
-            port = Integer.parseInt(properties.getProperty("port", "666"));
-            startMoney = Integer.parseInt(properties.getProperty("startmoney", "500"));
-            maxBet = Integer.parseInt(properties.getProperty("maxbet", "100"));
+//            Properties properties = new Properties();
+//            properties.load(new FileReader("roulette.ini"));
+//            port = Integer.parseInt(properties.getProperty("port", "666"));
+//            startMoney = Integer.parseInt(properties.getProperty("startmoney", "500"));
+//            maxBet = Integer.parseInt(properties.getProperty("maxbet", "100"));
             ServerSocket serverSocket = new ServerSocket(port);
             processMessages(serverSocket);
         } catch (IOException e) {
@@ -223,7 +223,13 @@ public class Main extends Thread {
 
     private int gameBet(int value, Bet bet) {
         int win = bet.win(value);
-        log(value + " : " + bet + (win > 0 ? " win "+ win : " lose"));
+        log(value + " : " + bet + (win > 0 ? " win " + win : " lose"));
         return win;
+    }
+
+    public void setProps(int port, int startMoney, int maxBet) {
+        this.port = port;
+        this.startMoney = startMoney;
+        this.maxBet = maxBet;
     }
 }
