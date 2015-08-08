@@ -23,9 +23,12 @@ public class ClientThread extends Thread {
         try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String command = in.readLine();
+            if (command.startsWith("register")) {
+                Main.log("registration attempt from "+socket.getInetAddress());
+            }
             out.println(roulette.processCommand(command));
         } catch (Exception ex) {
-            System.err.println("error in thread");
+            System.err.println("error in thread at " + socket.getInetAddress());
         } finally {
             try {
                 socket.close();

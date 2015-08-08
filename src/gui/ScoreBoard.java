@@ -34,13 +34,13 @@ public class ScoreBoard extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
 
-        int h = getHeight() / 10;
+        int h = getHeight() / Integer.max(10,accountList.size());
         for (int  i=0; i<accountList.size(); i++) {
             g.setColor(Color.BLACK);
             g.fillRect(75, h * i + h / 4 + 5, getMoneyBarLengthByAccount(i), h / 2);
             g.drawString(accountList.get(i).getName(), 5, h * i + 2*h / 3);
             g.drawString(accountList.get(i).getMoney() +"", 80+ getMoneyBarLengthByAccount(i), h * i + 2*h / 3);
-            g.setColor(colors[i]);
+            g.setColor(colors[i%10]);
             g.fillRect(70, h*i + h/4, getMoneyBarLengthByAccount(i), h/2);
         }
     }

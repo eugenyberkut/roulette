@@ -58,7 +58,7 @@ public class MainFrame extends JFrame{
         });
 
         JButton gameButton = new JButton("Game!");
-        bottomPanel.add(gameButton);
+        bottomPanel.add(gameButton); 
         gameButton.addActionListener(e -> doGame());
 
         JButton autoGameButton = new JButton("Auto game");

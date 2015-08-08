@@ -13,6 +13,7 @@ import java.util.*;
  */
 public class Main extends Thread {
     Random rnd = new Random();
+    Integer value = -1;
 
     private List<UserAccount> userAccounts = new ArrayList<>();
 
@@ -186,7 +187,7 @@ public class Main extends Thread {
     }
 
     public String getServerState() {
-        return serverState;
+        return serverState + (value == -1 ? "" : (" "+value));
     }
 
     public void setScoreBoard(ScoreBoard scoreBoard) {
@@ -194,7 +195,7 @@ public class Main extends Thread {
     }
 
     public void doGame() {
-        int value = rnd.nextInt(37); // от 0 до 36
+        value = rnd.nextInt(37); // от 0 до 36
         log("value = " + value);
         for (UserAccount userAccount : userAccounts) {
             List<Bet> bets = userAccount.getBets();
@@ -202,7 +203,7 @@ public class Main extends Thread {
             if (userAccount.getBets().isEmpty()) {
                 log(userAccount.getName() + " - not playing - penalty 5 chips (if positive)");
                 sum = -5;
-                if (sum < 0) sum = 0;
+                //if (sum < 0) sum = 0;
             } else {
                 for (Bet bet : bets) {
                     sum += gameBet(value, bet);
@@ -214,6 +215,8 @@ public class Main extends Thread {
                 }
             }
             userAccount.addMoney(sum);
+            int money = userAccount.getMoney();
+            if (money<0) userAccount.addMoney(Math.abs(money));
             userAccount.clearBets();
         }
     }
